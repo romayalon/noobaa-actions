@@ -1,0 +1,51 @@
+name: Manual RPM Build Dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to RPM Build From'
+        required: true
+      tag:
+        description: 'Additional tag for the build (such as alpha, beta, etc.) - Optional'
+        default: ''
+
+jobs:
+  manual-rpm-build-and-upload-to-s3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: 'romayalon/noobaa-core'
+          ref: ${{ github.event.inputs.branch }}
+      
+      - name: Get Current Date
+        id: date
+        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+      
+      - name: Prepare Suffix
+        id: suffix
+        if: ${{ github.event.inputs.tag != '' }}
+        run: echo suffix="-${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+      
+      - name: Build RPM
+        id: build_rpm
+        run: |
+          echo "::starting make rpm"
+          make rpm
+          echo "::make rpm completed"
+          RPM_BASE_VERSION=noobaa-core-5.15.0-1.el8.x86_64
+          DATE="${{ steps.date.outputs.date }}"
+          echo "::warning DATE=${DATE}"
+          RPM_FULL_PATH="${RPM_BASE_VERSION}_${{ github.event.inputs.branch }}_${DATE}${{ steps.suffix.outputs.suffix }}.rpm"
+          echo "::warning RPM FULL PATH=${RPM_FULL_PATH}"
+          cp ./build/rpm/noobaa-core-5.15.0-1.el8.x86_64.rpm ${RPM_FULL_PATH}
+          echo "rpm_full_path=${RPM_FULL_PATH}" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: Binary RPM
+          path: ${{ steps.build_rpm.outputs.rpm_full_path }}
+      
