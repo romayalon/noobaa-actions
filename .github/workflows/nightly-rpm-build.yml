@@ -13,5 +13,4 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Manual RPM Build Dispatch
-          repo: romayalon/noobaa-core
           inputs: '{ "branch": "master", "tag": "" }' 
