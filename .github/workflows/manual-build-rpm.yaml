@@ -54,6 +54,7 @@ jobs:
           path: ${{ steps.build_rpm.outputs.rpm_full_path }}
 
       - name: Setup AWS CLI
+        if: ${{ env.UPLOAD_TO_S3 == true }}
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.NEWAWSPROJKEY }}
