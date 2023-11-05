@@ -1,7 +1,7 @@
 name: Nightly RPM Build Dispatch
 on: 
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 23 * * *"
 
 env: 
   UPLOAD_TO_S3: true
