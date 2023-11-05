@@ -1,7 +1,7 @@
 name: Nightly RPM Build Dispatch
 on: 
   schedule:
-    - cron: "13 16 * * *"
+    - cron: "16 * * * *"
 
 
 jobs:
