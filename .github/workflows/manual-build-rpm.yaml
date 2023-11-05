@@ -52,4 +52,14 @@ jobs:
         with:
           name: noobaa_rpm
           path: ${{ steps.build_rpm.outputs.rpm_full_path }}
-      
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.NEWAWSPROJKEY }}
+          aws-secret-access-key: ${{ secrets.NEWAWSPROJSECRET }}
+          aws-region: us-east-1
+
+      - name: Copy RPM to S3 bucket
+        if: ${{ env.UPLOAD_TO_S3 == true }}
+        run: aws s3 cp ${{ steps.build_rpm.outputs.rpm_full_path }} s3://noobaa-core-rpms/
