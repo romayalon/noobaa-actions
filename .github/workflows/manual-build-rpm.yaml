@@ -10,7 +10,7 @@ on:
         default: ''
 
 jobs:
-  manual-rpm-build-and-upload-to-s3:
+  manual-rpm-build-and-upload-artifact:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -19,7 +19,7 @@ jobs:
         with:
           repository: 'romayalon/noobaa-core'
           ref: ${{ github.event.inputs.branch }}
-      
+
       - name: Get Current Date
         id: date
         run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
@@ -46,6 +46,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
-          name: Binary RPM
+          name: noobaa_rpm
           path: ${{ steps.build_rpm.outputs.rpm_full_path }}
       
