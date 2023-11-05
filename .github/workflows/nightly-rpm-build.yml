@@ -3,6 +3,8 @@ on:
   schedule:
     - cron: "*/5 * * * *"
 
+env: 
+  UPLOAD_TO_S3: true
 
 jobs:
   nightly-rpm-build-and-upload-artifact:
