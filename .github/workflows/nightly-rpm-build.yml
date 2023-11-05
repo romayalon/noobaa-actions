@@ -1,0 +1,42 @@
+name: Nightly RPM Build Dispatch
+on: 
+  schedule:
+    - cron: "13 16 * * *"
+
+
+jobs:
+  nightly-rpm-build-and-upload-artifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repo: romayalon/noobaa-core
+     
+      - name: Get Version
+        id: version
+        run: echo "version=$(jq -r '.version' < ./package.json)" >> $GITHUB_OUTPUT
+
+      - name: Get Current Date
+        id: date
+        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
+      - name: Build RPM
+        id: build_rpm
+        run: |
+          echo "::starting make rpm"
+          make rpm
+          echo "::make rpm completed"
+          RPM_BASE_VERSION=noobaa-core-${{ steps.version.outputs.version }}-1.el8.x86_64
+          DATE="${{ steps.date.outputs.date }}"
+          echo "::warning RPM_BASE_VERSION=${RPM_BASE_VERSION} DATE=${DATE}"
+          RPM_FULL_PATH="${RPM_BASE_VERSION}_${DATE}.rpm"
+          echo "::warning RPM FULL PATH=${RPM_FULL_PATH}"
+          cp ./build/rpm/${RPM_BASE_VERSION}.rpm ${RPM_FULL_PATH}
+          echo "rpm_full_path=${RPM_FULL_PATH}" >> $GITHUB_OUTPUT
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: noobaa_rpm
+          path: ${{ steps.build_rpm.outputs.rpm_full_path }}
