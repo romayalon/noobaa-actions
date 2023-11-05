@@ -22,9 +22,7 @@ jobs:
      
       - name: Get Version
         id: version
-        run: |
-          echo "PACKAGE_JSON=$(jq -c . < package.json)" >> $GITHUB_ENV
-          echo "version=${{ fromJson(env.PACKAGE_JSON).version }}" >> $GITHUB_OUTPUT
+        run: echo "version=$(jq -r '.version' < ./package.json)" >> $GITHUB_OUTPUT
 
       - name: Get Current Date
         id: date
