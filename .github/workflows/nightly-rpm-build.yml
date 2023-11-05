@@ -15,4 +15,4 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Manual RPM Build Dispatch
-          inputs: '{ "branch": "master", "tag": "" }' 
+          inputs: '{ "branch": "romy-rpm-gaction", "tag": "" }' 
