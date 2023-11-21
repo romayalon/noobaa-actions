@@ -34,11 +34,13 @@ jobs:
         run: |
           DATE=$(date +'%Y%m%d')
           VERSION=$(jq -r '.version' < ./package.json)
-          echo "rpm_full_path_rhel8=noobaa-core-${VERSION}-${DATE}.el8.x86_64.rpm" >> $GITHUB_OUTPUT
-          echo "rpm_full_path_rhel9=noobaa-core-${VERSION}-${DATE}.el9.x86_64.rpm" >> $GITHUB_OUTPUT
-          echo "RPM_FULL_PATH_RHEL8=${rpm_full_path_rhel8} RPM_FULL_PATH_RHEL9=${rpm_full_path_rhel9}"
-          cp ./build/rpm/${rpm_full_path_rhel8} ${rpm_full_path_rhel8}
-          cp ./build/rpm/${rpm_full_path_rhel9} ${rpm_full_path_rhel9}
+          RPM_BASE_VERSION_CENTOS8=noobaa-core-${VERSION}-${DATE}.el8.x86_64.rpm
+          RPM_BASE_VERSION_CENTOS9=noobaa-core-${VERSION}-${DATE}.el9.x86_64.rpm
+          echo "RPM_BASE_VERSION_CENTOS8=${RPM_BASE_VERSION_CENTOS8} RPM_BASE_VERSION_CENTOS9=${RPM_BASE_VERSION_CENTOS9}"
+          cp ./build/rpm/${RPM_BASE_VERSION_CENTOS8} ${RPM_BASE_VERSION_CENTOS8}
+          cp ./build/rpm/${RPM_BASE_VERSION_CENTOS9} ${RPM_BASE_VERSION_CENTOS9}
+          echo "rpm_full_path_centos8=${RPM_BASE_VERSION_CENTOS8}" >> $GITHUB_OUTPUT
+          echo "rpm_full_path_centos9=${RPM_BASE_VERSION_CENTOS9}" >> $GITHUB_OUTPUT
 
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
