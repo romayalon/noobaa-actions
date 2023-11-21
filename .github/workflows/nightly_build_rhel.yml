@@ -43,7 +43,7 @@ jobs:
           echo "rpm_full_path_centos9=${RPM_BASE_VERSION_CENTOS9}" >> $GITHUB_OUTPUT
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v3
         with:
           name: noobaa_rpm
           path: |
