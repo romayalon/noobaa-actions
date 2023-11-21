@@ -47,8 +47,8 @@ jobs:
         with:
           name: noobaa_rpm
           path: |
-            ${{ steps.finalize_rpm.outputs.rpm_full_path_rhel8 }}
-            ${{ steps.finalize_rpm.outputs.rpm_full_path_rhel9 }}
+            - ${{ steps.finalize_rpm.outputs.rpm_full_path_rhel8 }}
+            - ${{ steps.finalize_rpm.outputs.rpm_full_path_rhel9 }}
 
       - name: Setup AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
