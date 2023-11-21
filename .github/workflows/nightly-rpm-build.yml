@@ -1,7 +1,8 @@
 name: Nightly RPM Build Dispatch
 on: 
-  schedule:
-    - cron: "0 23 * * *"
+  workflow_dispatch:
+  # schedule:
+    # - cron: "0 23 * * *"
 
 
 jobs:
