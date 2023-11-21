@@ -15,12 +15,19 @@ jobs:
           repository: alphaprinz/noobaa-core
           ref: parameterize_base_image_version
      
-      - name: Build RPM
-        id: build_rpm
+      - name: Build RPM RHEL8
+        id: build_rpm_rhel8
         run: |
-          echo "Starting make rpm - RHEL8 & RHEL9"
-          make rpm CENTOS_VER=[8,9]
-          echo "Make rpm completed - RHEL8 & RHEL9"
+          echo "Starting make rpm - RHEL8"
+          make rpm CENTOS_VER=8
+          echo "Make rpm completed - RHEL8"
+
+      - name: Build RPM RHEL9
+        id: build_rpm_rhel9
+        run: |
+          echo "Starting make rpm - RHEL9"
+          make rpm CENTOS_VER=9
+          echo "Make rpm completed - RHEL9"
 
       - name: Finalize RPM full paths
         id: finalize_rpm
