@@ -9,6 +9,7 @@ on:
         description: 'Additional tag for the build (such as alpha, beta, etc.) - Optional'
         default: ''
       rhel_ver:
+        type: choice
         description: 'RHEL Base image (options: 8/9) - Optional, default is 9'
         default: '9'
         options: 
