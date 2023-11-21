@@ -1,0 +1,54 @@
+name: Nightly RPM Build Dispatch RHEL
+on: 
+  schedule:
+    - cron: "*/5 * * * *"
+
+
+jobs:
+  nightly-rpm-build-and-upload-artifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: alphaprinz/noobaa-core
+          ref: parameterize_base_image_version
+     
+      - name: Build RPM
+        id: build_rpm
+        run: |
+          echo "Starting make rpm - RHEL8 & RHEL9"
+          make rpm CENTOS_VER=[8,9]
+          echo "Make rpm completed - RHEL8 & RHEL9"
+
+      - name: Finalize RPM full paths
+        id: finalize_rpm
+        run: |
+          DATE=$(date +'%Y%m%d')
+          VERSION=$(jq -r '.version' < ./package.json)
+          echo "rpm_full_path_rhel8=noobaa-core-${VERSION}-${DATE}.el8.x86_64.rpm" >> $GITHUB_OUTPUT
+          echo "rpm_full_path_rhel9=noobaa-core-${VERSION}-${DATE}.el9.x86_64.rpm" >> $GITHUB_OUTPUT
+          echo "RPM_FULL_PATH_RHEL8=${rpm_full_path_rhel8} RPM_FULL_PATH_RHEL9=${rpm_full_path_rhel9}"
+          cp ./build/rpm/${rpm_full_path_rhel8} ${rpm_full_path_rhel8}
+          cp ./build/rpm/${rpm_full_path_rhel9} ${rpm_full_path_rhel9}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: noobaa_rpm
+          path: |
+            ${{ steps.finalize_rpm.outputs.rpm_full_path_rhel8 }}
+            ${{ steps.finalize_rpm.outputs.rpm_full_path_rhel9 }}
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.NEWAWSPROJKEY }}
+          aws-secret-access-key: ${{ secrets.NEWAWSPROJSECRET }}
+          aws-region: us-east-1
+
+      - name: Copy RPM to S3 bucket
+        run: |
+          aws s3 cp ${{ steps.finalize_rpm.outputs.rpm_full_path_rhel8 }} s3://noobaa-core-rpms/
+          aws s3 cp ${{ steps.finalize_rpm.outputs.rpm_full_path_rhel9 }} s3://noobaa-core-rpms/
