@@ -1,4 +1,4 @@
-name: Manual RPM Build Dispatch
+name: Manual RPM Build Dispatch RHEL
 on: 
   workflow_dispatch:
     inputs:
@@ -8,7 +8,7 @@ on:
       tag:
         description: 'Additional tag for the build (such as alpha, beta, etc.) - Optional'
         default: ''
-      base_image:
+      rhel_ver:
         description: 'RHEL Base image (options: 8/9) - Optional, default is 9'
         default: '9'
         options: 
