@@ -48,9 +48,9 @@ jobs:
           DATE=$(date +'%Y%m%d')
           VERSION=$(jq -r '.version' < ./package.json)
           RHEL_VER=${{ steps.rhel_ver.outputs.rhel_ver }}
-          RPM_SUFFIX="el${RHEL_VER}.x86_64.rpm"
+          RPM_SUFFIX=el${RHEL_VER}.x86_64.rpm
           RPM_BASE_VERSION=noobaa-core-${VERSION}-${DATE}
-          RPM_FULL_PATH="${RPM_BASE_VERSION}-${{ github.event.inputs.branch }}${{ steps.suffix.outputs.suffix }}.{RPM_SUFFIX}"
+          RPM_FULL_PATH=${RPM_BASE_VERSION}-${{ github.event.inputs.branch }}${{ steps.suffix.outputs.suffix }}.{RPM_SUFFIX}
           echo "rpm_full_path=./build/rpm/${RPM_FULL_PATH}" >> $GITHUB_OUTPUT
 
       - name: Upload artifact
