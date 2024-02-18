@@ -20,19 +20,19 @@ jobs:
 
         # Check the status of each task
         if [[ "$issue_body" != *"[x] Logs Attached"* ]]; then
-          error_messages+="Logs are missing. "
+          error_messages+="Logs are missing. \n"
         fi
 
         if [[ "$issue_body" != *"[x] Command Attached"* ]]; then
-          error_messages+="Command is missing. "
+          error_messages+="Command is missing. \n"
         fi
 
         if [[ "$issue_body" != *"[x] Version"* ]]; then
-          error_messages+="Version is missing. "
+          error_messages+="Version is missing. \n"
         fi
 
         if [[ "$issue_body" != *"[x] Platform"* ]]; then
-          error_messages+="Platform is missing. "
+          error_messages+="Platform is missing. \n"
         fi
 
         # Generate a comment if there are errors
