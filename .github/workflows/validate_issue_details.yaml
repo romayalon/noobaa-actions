@@ -15,10 +15,31 @@ jobs:
       run: |
         issue_body=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}" | jq -r '.body')
         
-        # Add a comment to remind the user to check the specific details
-        reminder_comment="It appears that specific details are not checked. Please make sure to check the relevant button or provide the required information."
-        curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-             -H "Accept: application/vnd.github.v3+json" \
-             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-             -d "{\"body\":\"$reminder_comment\"}"
-        
+        # Initialize error messages
+        error_messages=""
+
+        # Check the status of each task
+        if [[ "$issue_body" != *"[x] Logs Attached"* ]]; then
+          error_messages+="Logs are missing. "
+        fi
+
+        if [[ "$issue_body" != *"[x] Command Attached"* ]]; then
+          error_messages+="Command is missing. "
+        fi
+
+        if [[ "$issue_body" != *"[x] Version"* ]]; then
+          error_messages+="Version is missing. "
+        fi
+
+        if [[ "$issue_body" != *"[x] Platform"* ]]; then
+          error_messages+="Platform is missing. "
+        fi
+
+        # Generate a comment if there are errors
+        if [ -n "$error_messages" ]; then
+          comment="Error: Some tasks are incomplete. Please address the following issues:\n\n$error_messages"
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+               -d "{\"body\":\"$comment\"}"
+        fi
