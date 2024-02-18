@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 Minimal issue reporting requirements - 
-- [] Logs Attached
-- [] Command Attached
-- [] Version 
-- [] Platform
+- [ ] Logs Attached
+- [ ] Command Attached
+- [ ] Version 
+- [ ] Platform
