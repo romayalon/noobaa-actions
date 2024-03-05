@@ -1,4 +1,4 @@
-name: Manual RPM Build Dispatch
+name: Manual RPM Build Dispatch with Arch
 on: 
   workflow_dispatch:
     inputs:
@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: noobaa-core/noobaa-core
+          repository: noobaa/noobaa-core
           ref: ${{ github.event.inputs.branch }}
      
       - name: Prepare Suffix
