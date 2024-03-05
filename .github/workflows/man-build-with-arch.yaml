@@ -48,10 +48,12 @@ jobs:
         run: |
           if [ "${{ github.event.inputs.architecture }}" == "linux/amd64" ]; then
             ARCH_SUFFIX="x86_64"
+            echo "architecture=${ARCH_SUFFIX}" >> $GITHUB_OUTPUT
           elif [ "${{ github.event.inputs.architecture }}" == "linux/ppc64le" ]; then
             ARCH_SUFFIX="ppc64le"
+            echo "architecture=${ARCH_SUFFIX}" >> $GITHUB_OUTPUT
+            docker run --privileged --rm tonistiigi/binfmt --install all
           fi
-          echo "architecture=${ARCH_SUFFIX}" >> $GITHUB_OUTPUT
       
       - name: Build RPM
         id: build_rpm
