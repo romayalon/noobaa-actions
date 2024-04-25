@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: noobaa/noobaa-core
+          repository: romayalon/noobaa-core
           ref: ${{ github.event.inputs.branch }}
      
       - name: Prepare Suffix
