@@ -1,0 +1,53 @@
+name: Nightly RPM Stage 5.15.4 Build Dispatch
+on: 
+  workflow_dispatch:
+
+jobs:
+  nightly-rpm-build-and-upload-artifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: noobaa/noobaa-core
+          ref: stage_5.15.4
+     
+      - name: Build RPM CENTOS8
+        id: build_rpm_centos8
+        run: |
+          echo "Starting make rpm - CENTOS8"
+          make rpm CENTOS_VER=8
+          echo "Make rpm completed - CENTOS8"
+
+      - name: Build RPM CENTOS9
+        id: build_rpm_centos9
+        run: |
+          echo "Starting make rpm - CENTOS9"
+          make rpm CENTOS_VER=9
+          echo "Make rpm completed - CENTOS9"
+
+      - name: Finalize RPM full paths
+        id: finalize_rpm
+        run: |
+          DATE=$(date +'%Y%m%d')
+          VERSION=$(jq -r '.version' < ./package.json)
+          STAGE_BRANCH="stage-5.15.4"
+          RPM_BASE_VERSION_CENTOS8=noobaa-core-${VERSION}-${DATE}.el8.x86_64.rpm
+          RPM_BASE_VERSION_CENTOS9=noobaa-core-${VERSION}-${DATE}.el9.x86_64.rpm
+          RPM_CENTOS8_STAGE=noobaa-core-${STAGE_BRANCH}-${VERSION}-${DATE}.el8.x86_64.rpm
+          RPM_CENTOS9_STAGE=noobaa-core-${STAGE_BRANCH}-${VERSION}-${DATE}.el9.x86_64.rpm
+          echo "RPM_BASE_VERSION_CENTOS8=${RPM_BASE_VERSION_CENTOS8} RPM_BASE_VERSION_CENTOS9=${RPM_BASE_VERSION_CENTOS9}"
+          echo "RPM_CENTOS8_STAGE=${RPM_CENTOS8_STAGE} RPM_CENTOS9_STAGE=${RPM_CENTOS9_STAGE}"
+          cp ./build/rpm/${RPM_BASE_VERSION_CENTOS8} ${RPM_CENTOS8_STAGE}
+          cp ./build/rpm/${RPM_BASE_VERSION_CENTOS9} ${RPM_CENTOS9_STAGE}
+          echo "rpm_full_path_centos8=${RPM_CENTOS8_STAGE}" >> $GITHUB_OUTPUT
+          echo "rpm_full_path_centos9=${RPM_CENTOS9_STAGE}" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: noobaa_rpm
+          path: |
+            ${{ steps.finalize_rpm.outputs.rpm_full_path_centos8 }}
+            ${{ steps.finalize_rpm.outputs.rpm_full_path_centos9 }}
