@@ -31,3 +31,10 @@ jobs:
       centos_ver: ${{ github.event.inputs.centos_ver }}
       tag: ${{ github.event.inputs.tag }}
       architecture: ${{ github.event.inputs.architecture }} 
+
+  publish-centos9-rpm-to-aws:
+    needs: manual-rpm-build-and-upload-artifact
+    uses: ./.github/workflows/upload-rpm-to-aws.yaml
+    with:
+      rpm_full_path: ${{ needs.manual-rpm-build-and-upload-artifact.outputs.rpm_full_path }}
+
