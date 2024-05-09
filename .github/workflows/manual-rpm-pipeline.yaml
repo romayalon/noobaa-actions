@@ -27,7 +27,7 @@ jobs:
   manual-rpm-build-and-upload-artifact:
     uses: ./.github/workflows/rpm-build-base.yaml
     with:
-      workflow: Manual RPM Build Dispatch
+      workflow: RPM Build Base Call Workflow
       repo: romayalon/noobaa-actions
       token: ${{ secrets.GHACCESSTOKEN }}
       inputs: '{ "branch": ${{ inputs.branch }}, "centos_ver": ${{ inputs.centos_ver }}, "tag": ${{ inputs.tag }}, "architecture": ${{ inputs.architecture }} }' 
