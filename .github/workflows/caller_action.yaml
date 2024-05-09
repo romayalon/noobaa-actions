@@ -5,7 +5,7 @@ on:
 
 jobs:
   job1:
-     uses: romayalon/noobaa-actions/.github/workflows/called.yaml@v1
+     uses: ./.github/workflows/called.yaml
      with:
       branch: stage_5.15.4
       centos_ver: 8
