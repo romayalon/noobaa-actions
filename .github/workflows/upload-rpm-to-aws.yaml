@@ -1,0 +1,19 @@
+name: Upload RPM to AWS
+on: 
+  workflow_call:
+    inputs:
+      rpm_full_path: 
+        type: string
+        description: 'RPM path to be uploaded to AWS bucket'
+
+
+jobs:
+  upload-rpm-to-aws:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+
+      - name: Copy RPM to S3 bucket
+        run: |
+          echo "ROMY COPY RPM"
+          echo ${{ inputs.rpm_full_path }}
