@@ -9,7 +9,7 @@ jobs:
    timeout-minutes: 90
    steps:
      - name: Invoke RPM Build based on stage 5.15.4 CENTOS 8
-       uses: ./.github/workflows/called.yaml
+       uses: noobaa/noobaa-core/.github/workflows/called.yaml
        with:
         branch: stage_5.15.4
         centos_ver: 8
