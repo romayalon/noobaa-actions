@@ -29,4 +29,4 @@ jobs:
     with:
       workflow: RPM Build Base Call Workflow
       repo: romayalon/noobaa-actions
-      inputs: '{ "branch": ${{ inputs.branch }}, "centos_ver": ${{ inputs.centos_ver }}, "tag": ${{ inputs.tag }}, "architecture": ${{ inputs.architecture }} }' 
+      inputs: '{ "branch": "${{ inputs.branch }}", "centos_ver": "${{ inputs.centos_ver }}", "tag": "${{ inputs.tag }}", "architecture": "${{ inputs.architecture }}" }' 
