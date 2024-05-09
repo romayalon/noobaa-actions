@@ -1,0 +1,22 @@
+name: Call a reusable workflow and use its outputs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  job1:
+   runs-on: ubuntu-latest
+   timeout-minutes: 90
+   steps:
+     - name: Invoke RPM Build based on stage 5.15.4 CENTOS 8
+       uses: benc-uk/workflow-dispatch@v1
+       with:
+        workflow: Called
+        repo: romayalon/noobaa-core
+        inputs: '{ "branch": "stage_5.15.4", "centos_ver": "8" }' 
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+    steps:
+      - run: echo ${{ needs.job1.outputs.full_rpm_path }}
