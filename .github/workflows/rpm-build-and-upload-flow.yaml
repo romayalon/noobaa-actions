@@ -1,0 +1,43 @@
+name: RPM Build And Upload Flow
+on: 
+  workflow_call:
+    inputs:
+      branch: 
+        type: string
+        description: 'Run rpm build and upload to aws flow'
+        default: 'master'
+
+jobs:
+  build-rpm-centos8:
+    uses: ./.github/workflows/rpm-build-base.yaml
+    with:
+      workflow: RPM Build Base Call Workflow
+      repo: noobaa/noobaa-core
+      token: ${{ secrets.GHACCESSTOKEN }}
+      inputs: '{ "branch": ${{ inputs.branch }}, "centos_ver": "8" }' 
+
+  build-rpm-centos9:
+    uses: ./.github/workflows/rpm-build-base.yaml
+    with:
+      workflow: RPM Build Base Call Workflow
+      repo: noobaa/noobaa-core
+      token: ${{ secrets.GHACCESSTOKEN }}
+      inputs: '{ "branch": ${{ inputs.branch }}, "centos_ver": "9" }'
+  
+  publish-centos8-rpm-to-aws:
+    needs: build-rpm-centos8
+    uses: ./.github/workflows/upload-rpm-to-aws.yaml
+    with:
+      workflow: Upload RPM to AWS
+      repo: noobaa/noobaa-core
+      token: ${{ secrets.GHACCESSTOKEN }}
+      inputs: '{ "rpm_full_path": "needs.build-rpm-centos8.outputs.rpm_full_path" }'
+
+  publish-centos9-rpm-to-aws:
+    needs: build-rpm-centos9
+    uses: ./.github/workflows/upload-rpm-to-aws.yaml
+    with:
+      workflow: Upload RPM to AWS
+      repo: noobaa/noobaa-core
+      token: ${{ secrets.GHACCESSTOKEN }}
+      inputs: '{ "rpm_full_path": "needs.build-rpm-centos9.outputs.rpm_full_path" }'
