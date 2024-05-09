@@ -3,7 +3,6 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        type: environment
         description: 'Branch to RPM Build From'
         required: true
       tag:
