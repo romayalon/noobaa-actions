@@ -11,27 +11,23 @@ jobs:
   build-rpm-centos8:
     uses: ./.github/workflows/rpm-build-base.yaml
     with:
-      workflow: RPM Build Base Call Workflow
-      repo: noobaa/noobaa-core
-      token: ${{ secrets.GHACCESSTOKEN }}
-      inputs: '{ "branch": ${{ inputs.branch }}, "centos_ver": "8" }' 
+      branch: ${{ inputs.branch }}
+      centos_ver: '8'
 
   build-rpm-centos9:
     uses: ./.github/workflows/rpm-build-base.yaml
     with:
-      workflow: RPM Build Base Call Workflow
-      repo: noobaa/noobaa-core
-      token: ${{ secrets.GHACCESSTOKEN }}
-      inputs: '{ "branch": ${{ inputs.branch }}, "centos_ver": "9" }'
-  
-  publish-centos8-rpm-to-aws:
+      branch: ${{ inputs.branch }}
+      centos_ver: '9'
+
+  upload-centos8-rpm-to-aws:
     needs: build-rpm-centos8
     uses: ./.github/workflows/upload-rpm-to-aws.yaml
     with:
       rpm_full_path: ${{ needs.build-rpm-centos8.outputs.rpm_full_path }}
     secrets: inherit
 
-  publish-centos9-rpm-to-aws:
+  upload-centos9-rpm-to-aws:
     needs: build-rpm-centos9
     uses: ./.github/workflows/upload-rpm-to-aws.yaml
     with:
