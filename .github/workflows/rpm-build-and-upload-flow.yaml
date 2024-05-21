@@ -32,6 +32,7 @@ jobs:
       repo: noobaa/noobaa-core
       token: ${{ secrets.GHACCESSTOKEN }}
       inputs: '{ "rpm_full_path": "needs.build-rpm-centos8.outputs.rpm_full_path" }'
+    secrets: inherit
 
   publish-centos9-rpm-to-aws:
     needs: build-rpm-centos9
@@ -41,3 +42,4 @@ jobs:
       repo: noobaa/noobaa-core
       token: ${{ secrets.GHACCESSTOKEN }}
       inputs: '{ "rpm_full_path": "needs.build-rpm-centos9.outputs.rpm_full_path" }'
+    secrets: inherit
