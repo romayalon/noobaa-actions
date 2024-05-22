@@ -12,6 +12,19 @@
       runs-on: ubuntu-latest
       timeout-minutes: 90
       steps:
+
+        - name: Download artifact
+          uses: actions/download-artifact@v4
+          with:
+            path: ${{ inputs.rpm_full_path }}
+            name: ${{ inputs.rpm_full_path }}
+        
+        - name: Check file
+          with:
+            run: |
+              ls ${{ inputs.rpm_full_path }}
+              cp ${{ inputs.rpm_full_path }} "${{ inputs.rpm_full_path }}2"
+            
         - name: Setup AWS CLI
           uses: aws-actions/configure-aws-credentials@v1
           with:
