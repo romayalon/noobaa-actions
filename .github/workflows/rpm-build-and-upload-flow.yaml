@@ -8,14 +8,16 @@ on:
         default: 'master'
 
 jobs:
+  build-rpm-centos8:
+    uses: ./.github/workflows/rpm-build-base.yaml
+    with:
+      branch: ${{ inputs.branch }}
+      centos_ver: '8'
+
   upload-centos8-rpm-to-aws:
+    needs: build-rpm-centos8
     uses: ./.github/workflows/upload-rpm-to-aws.yaml
     with:
-      rpm_full_path: 'ROMY_FULL_PATH8'
+      rpm_full_path: ${{ needs.build-rpm-centos8.outputs.rpm_full_path }}
     secrets: inherit
 
-  upload-centos9-rpm-to-aws:
-    uses: ./.github/workflows/upload-rpm-to-aws.yaml
-    with:
-      rpm_full_path: 'ROMY_FULL_PATH9'
-    secrets: inherit
