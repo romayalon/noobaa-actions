@@ -28,5 +28,5 @@ jobs:
     uses: ./.github/workflows/rpm-build-and-upload-flow.yaml
     secrets: inherit
     with:
-      branch: 'stage_5.15.4'
+      branch: 'master'
 
