@@ -20,10 +20,9 @@
             name: ${{ inputs.rpm_full_path }}
         
         - name: Check file
-          with:
-            run: |
-              ls ${{ inputs.rpm_full_path }}
-              cp ${{ inputs.rpm_full_path }} "${{ inputs.rpm_full_path }}2"
+          run: |
+            ls ${{ inputs.rpm_full_path }}
+            cp ${{ inputs.rpm_full_path }} "${{ inputs.rpm_full_path }}2"
             
         - name: Setup AWS CLI
           uses: aws-actions/configure-aws-credentials@v1
