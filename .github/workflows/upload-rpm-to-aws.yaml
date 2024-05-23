@@ -33,4 +33,4 @@
 
         - name: Copy RPM to S3 bucket
           run: |
-            aws s3 cp ${{ inputs.rpm_full_path }} s3://noobaa-core-rpms/
+            aws s3 cp ${{ inputs.rpm_full_path }} s3://noobaa-core-rpms/${{ inputs.rpm_full_path }}
