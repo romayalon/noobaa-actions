@@ -23,7 +23,7 @@
           run: |
             ls -l | grep ${{ inputs.rpm_full_path }}
             ls -la ${{ inputs.rpm_full_path }}
-            cp ${{ inputs.rpm_full_path }} "${{ inputs.rpm_full_path }}2"
+            cp ${{ inputs.rpm_full_path }}/${{ inputs.rpm_full_path }} "${{ inputs.rpm_full_path }}"
             
         - name: Setup AWS CLI
           uses: aws-actions/configure-aws-credentials@v4
