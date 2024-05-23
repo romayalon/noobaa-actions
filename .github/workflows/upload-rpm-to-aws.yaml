@@ -23,6 +23,7 @@
           run: |
             ls -la ${{ inputs.rpm_full_path }}
             cp -r ${{ inputs.rpm_full_path }} "${{ inputs.rpm_full_path }}2"
+            unzip ${{ inputs.rpm_full_path }}
             
         - name: Setup AWS CLI
           uses: aws-actions/configure-aws-credentials@v4
