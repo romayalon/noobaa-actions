@@ -21,6 +21,7 @@
         
         - name: Check file
           run: |
+            ls -l | grep ${{ inputs.rpm_full_path }}
             ls -la ${{ inputs.rpm_full_path }}
             cp -r ${{ inputs.rpm_full_path }} "${{ inputs.rpm_full_path }}2"
             unzip ${{ inputs.rpm_full_path }}
