@@ -21,8 +21,6 @@
         - name: Check file
           run: |
             ls -l | grep ${{ inputs.rpm_full_path }}
-            ls -la ${{ inputs.rpm_full_path }}
-            cp ${{ inputs.rpm_full_path }}/${{ inputs.rpm_full_path }} "${{ inputs.rpm_full_path }}2"
             
         - name: Setup AWS CLI
           uses: aws-actions/configure-aws-credentials@v4
@@ -33,4 +31,4 @@
 
         - name: Copy RPM to S3 bucket
           run: |
-            aws s3 cp "${{ inputs.rpm_full_path }}/${{ inputs.rpm_full_path }}" s3://noobaa-core-rpms/
+            aws s3 cp ${{ inputs.rpm_full_path }} s3://noobaa-core-rpms/
