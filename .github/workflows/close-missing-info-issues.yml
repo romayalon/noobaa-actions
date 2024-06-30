@@ -17,15 +17,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          missing_info_issues=gh issue list --label 'missing info' --state open --json number,title
-          echo missing_info_issues=7 * 24 * 60 * 60 >> $GITHUB_OUTPUT  
+          missing_info_issues=$(gh issue list --label 'missing info' --state open --json number,title)
+          echo missing_info_issues=$missing_info_issues >> $GITHUB_OUTPUT  
 
       - name: Close/Comment on missing info issues
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           
-          comment_issue_threshold=1 * 60      # Comment on issue labled 1 minues ago
+          comment_issue_threshold=1 * 60      # Comment on issue labled 1 minutes ago
           close_issue_threshold=3 * 60        # Close and comment on issue labled 3 minutes ago 
           
           missing_info_comment='This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'
