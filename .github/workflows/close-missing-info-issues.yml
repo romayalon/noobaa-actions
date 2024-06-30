@@ -1,0 +1,22 @@
+name: Close missing info issues
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs every day at midnight
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  close-missing-info-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Close issues labeled with "missing info" older than a week
+        uses: peter-evans/close-issue@v4
+        with:
+          issue-label: 'missing info'
+          close-comment: 'This issue is being closed because it has been labeled "missing info" for more than a week. Please provide the requested information and reopen the issue if necessary.'
+          days-before-close: 7
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
