@@ -13,6 +13,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Close missing info issues
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh issue list --label "missing info" --state open --json number,labels,createdAt \
             | jq -r '.[] | select(((now - ( .createdAt | fromdateiso8601)) / 86400) > 7) | .number' \
