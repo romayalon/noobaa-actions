@@ -24,14 +24,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-
-          comment_issue_threshold=$((1 * 60))
-          close_issue_threshold=$((3 * 60))
-          
+          comment_issue_threshold=$((3 * 24 * 60 * 60))
+          echo $comment_issue_threshold
+          close_issue_threshold=$((7 * 24 * 60 * 60))
+          echo $close_issue_threshold
           missing_info_comment='This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'
           missing_info_closure_comment='This issue is being closed because it was labeled \"missing info\" more than 7 days ago. Please provide the requested information and reopen the issue if necessary.'
-          
+          echo $missing_info_comment
+          echo $missing_info_closure_comment
+
           issues="${{ steps.get_missing_info_open_issues.outputs.missing_info_issues }}"
+          echo $issues
 
           # Process each issue to check the label addition time
           echo "$issues" | jq -c '.[]' | while read issue; do
