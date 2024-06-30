@@ -1,4 +1,4 @@
-name: Close missing info issues
+name: Close issues labeled 'missing info' more than 5 minutes ago
 
 on:
   schedule:
@@ -6,29 +6,38 @@ on:
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
-  close-missing-info-issues:
+  close-labeled-issues:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Close missing info issues
+        
+      - name: Close stale issues
         env:
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          GET_ISSUES_CMD="gh issue list --label 'missing info' --state open --json number,labels,createdAt"
-          FILTER_ISSUES_CMD="jq -r '.[] | select(((now - (.createdAt | fromdateiso8601)) / 86400) > 7) | .number'"
+          GET_ISSUES_CMD="gh issue list --label 'missing_info' --state open --json number,title"
           CLOSE_ISSUE_CMD="gh issue close"
+          COMMENT_CMD="gh issue comment"
           
+          # Get list of issues with the 'missing_info' label
           issues=$(eval "$GET_ISSUES_CMD")
-          echo $issues
-          
-          # Filter issues older than 7 days
-          issue_numbers=$(echo "$issues" | eval "$FILTER_ISSUES_CMD")
-          echo $issue_numbers
-                    
-          # Loop through each issue number and close it with a comment
-          closure_comment='This issue is being closed because it has been labeled \"missing info\" for more than a week. Please provide the requested information and reopen the issue if necessary.'
-          for issue_number in $issue_numbers; do
-            eval "$CLOSE_ISSUE_CMD $issue_number --comment $closure_comment"
+
+          # Process each issue to check the label addition time
+          echo "$issues" | jq -c '.[]' | while read issue; do
+            issue_number=$(echo "$issue" | jq -r '.number')
+            issue_title=$(echo "$issue" | jq -r '.title')
+
+            # Get the timeline events for each issue
+            events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '[.[] | select(.event=="labeled" and .label.name=="missing_info") | {created_at: .created_at}]')
+
+            # Check if the label was added more than 5 minutes ago
+            now=$(date -u +"%Y-%m-%dT%H:%M:00Z")
+            five_minutes_ago=$(date -u -d "$now - 5 minutes" +"%Y-%m-%dT%H:%M:00Z")
+            label_added_at=$(echo "$events" | jq -r '.[0].created_at')
+
+            if [[ "$label_added_at" < "$five_minutes_ago" ]]; then
+              echo "Closing issue #$issue_number: $issue_title"
+              eval "$CLOSE_ISSUE_CMD $issue_number --comment 'This issue is being closed because it was labeled \"missing_info\" more than 5 minutes ago. Please provide the requested information and reopen the issue if necessary.'"
+            fi
           done
