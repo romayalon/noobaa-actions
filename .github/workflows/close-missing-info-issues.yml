@@ -37,7 +37,7 @@ jobs:
             now=$(date -u +"%Y-%m-%dT%H:%M:00Z")
             five_minutes_ago=$(date -u -d "$now - 5 minutes" +"%Y-%m-%dT%H:%M:00Z")
             one_minutes_ago=$(date -u -d "$now - 1 minutes" +"%Y-%m-%dT%H:%M:00Z")
-            //three_days_ago=$(date -u -d "$now - 3 days" +"%Y-%m-%dT%H:%M:00Z")
+            # three_days_ago=$(date -u -d "$now - 3 days" +"%Y-%m-%dT%H:%M:00Z")
             label_added_at=$(echo "$events" | jq -r '.[0].created_at')
             echo $label_added_at
             echo $five_minutes_ago
