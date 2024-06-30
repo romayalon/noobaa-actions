@@ -1,22 +1,29 @@
 name: Close missing info issues
+
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs every day at midnight
+    - cron: '*/2 * * * *'  # Runs every 2 minutes
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
   close-missing-info-issues:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
-      - name: Close issues labeled with "missing info" older than a week
-        uses: peter-evans/close-issue@v2
-        with:
-          issue-label: 'missing info'
-          close-comment: 'This issue is being closed because it has been labeled "missing info" for more than a week. Please provide the requested information and reopen the issue if necessary.'
-          days-before-close: 7
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Authenticate GitHub CLI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "${GITHUB_TOKEN}" | gh auth login --with-token
+
+      - name: Close missing info issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue list --label "missing info" --state open --json number,labels,createdAt \
+            | jq -r '.[] | select(((now - ( .createdAt | fromdateiso8601)) / 86400) > 7) | .number' \
+            | while read -r issueNumber; do
+                gh issue close "$issueNumber" --comment "This issue is being closed because it has been labeled 'missing info' for more than a week. Please provide the requested information and reopen the issue if necessary.";
+              done
