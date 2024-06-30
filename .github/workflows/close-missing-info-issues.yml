@@ -45,7 +45,7 @@ jobs:
             echo $five_minutes_ago
             echo $one_minutes_ago
             
-            if [[ "$label_added_at" < "$five_minutes_ago" && "$label_added_at" > "$one_minutes_ago"]]; then
+            if [[ "$label_added_at" > "$one_minutes_ago" && "$label_added_at" < "$five_minutes_ago" ]]; then
               echo "Commenting on issue #$issue_number: $issue_title"
               eval "$COMMENT_CMD $issue_number --body 'This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'"
             elif [[ "$label_added_at" > "$five_minutes_ago" ]]; then
