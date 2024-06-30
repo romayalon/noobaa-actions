@@ -1,9 +1,9 @@
-name: Close issues labeled 'missing info' more than 5 minutes ago
+name: Handle issues labeled 'missing info'
 
 on:
   schedule:
-    - cron: '0 23 * * *'  # Runs every night 
-  workflow_dispatch:  # Allows manual triggering of the workflow
+    - cron: '0 23 * * *'    # Runs every night at 11PM
+  workflow_dispatch:        # Allows manual triggering of the workflow
 
 jobs:
   close-labeled-issues:
@@ -11,49 +11,47 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
-      - name: Close stale issues
+
+      - name: Get missing info open issues
+        id: get_missing_info_open_issues
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          GET_ISSUES_CMD="gh issue list --label 'missing info' --state open --json number,title"
-          CLOSE_ISSUE_CMD="gh issue close"
-          COMMENT_CMD="gh issue comment"
+          missing_info_issues=gh issue list --label 'missing info' --state open --json number,title
+          echo missing_info_issues=7 * 24 * 60 * 60 >> $GITHUB_OUTPUT  
+
+      - name: Close/Comment on missing info issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           
-          # Get list of issues with the 'missing_info' label
-          issues=$(eval "$GET_ISSUES_CMD")
-          echo $issues
+          comment_issue_threshold=1 * 60      # Comment on issue labled 1 minues ago
+          close_issue_threshold=3 * 60        # Close and comment on issue labled 3 minutes ago 
+          
+          missing_info_comment='This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'
+          missing_info_closure_comment='This issue is being closed because it was labeled \"missing info\" more than 7 days ago. Please provide the requested information and reopen the issue if necessary.'
+          
+          issues="${{ steps.get_missing_info_open_issues.outputs.missing_info_issues }}"
+
           # Process each issue to check the label addition time
           echo "$issues" | jq -c '.[]' | while read issue; do
             issue_number=$(echo "$issue" | jq -r '.number')
             issue_title=$(echo "$issue" | jq -r '.title')
 
-            # Get the timeline events for each issue
+            # Get the timeline events for each issue, filter by missing info label
             events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '[.[] | select(.event=="labeled" and .label.name=="missing info") | {created_at: .created_at}]')
-            echo $issue_number
-            echo $issue_title
-            echo $events
-            # Check if the label was added more than 5 minutes ago
-            now=$(date -u +%s)
-            # five_minutes_ago=$(date -u -d "$now - 5 minutes" +"%Y-%m-%dT%H:%M:00Z")
-            # one_minutes_ago=$(date -u -d "$now - 1 minutes" +"%Y-%m-%dT%H:%M:00Z")
-            # seven_days_ago=$(date -u -d "$now - 7 days" +"%Y-%m-%dT%H:%M:00Z")
-            # three_days_ago=$(date -u -d "$now - 3 days" +"%Y-%m-%dT%H:%M:00Z")
-            label_added_at=$(echo "$events" | jq -r '.[-1].created_at')
-            label_added_timestamp=$(date -u -d "$label_added_at" +%s)  # Convert label added time to seconds since epoch
+            echo "issue_number=$issue_number, issue_title=$issue_title, events=$events"
 
-            echo $label_added_at
-            echo $label_added_timestamp
-            echo $one_minutes_ago
-            comment_threshold=60
-            close_issue_threshold=180
-            time_diff=$((now - label_added_timestamp))
+            now=$(date -u +%s)
+            label_added_at=$(echo "$events" | jq -r '.[-1].created_at')
+            label_added_timestamp=$(date -u -d "$label_added_at" +%s)         # Convert label added time to seconds since epoch
+            time_diff=$((now - label_added_timestamp)) 
     
-            if [[ $time_diff -gt $comment_threshold && $time_diff -lt $close_issue_threshold ]]; then
+            if [[ $time_diff -gt $comment_issue_threshold && $time_diff -lt $close_issue_threshold ]]; then
               echo "Commenting on issue #$issue_number: $issue_title"
-              eval "$COMMENT_CMD $issue_number --body 'This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'"
+              gh issue comment $issue_number --body $missing_info_comment 
             elif [[ $time_diff -ge $close_issue_threshold ]]; then
               echo "Closing issue #$issue_number: $issue_title"
-              eval "$CLOSE_ISSUE_CMD $issue_number --comment 'This issue is being closed because it was labeled \"missing info\" more than 5 minutes ago. Please provide the requested information and reopen the issue if necessary.'"
+              gh issue close $issue_number --comment 
             fi
           done
