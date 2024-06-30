@@ -16,7 +16,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          GET_ISSUES_CMD="gh issue list --label 'missing_info' --state open --json number,title"
+          GET_ISSUES_CMD="gh issue list --label 'missing info' --state open --json number,title"
           CLOSE_ISSUE_CMD="gh issue close"
           COMMENT_CMD="gh issue comment"
           
@@ -29,7 +29,7 @@ jobs:
             issue_title=$(echo "$issue" | jq -r '.title')
 
             # Get the timeline events for each issue
-            events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '[.[] | select(.event=="labeled" and .label.name=="missing_info") | {created_at: .created_at}]')
+            events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '[.[] | select(.event=="labeled" and .label.name=="missing info") | {created_at: .created_at}]')
             echo $issue_number
             echo $issue_title
             echo $events
