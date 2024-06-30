@@ -12,15 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Authenticate GitHub CLI
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "${GITHUB_TOKEN}" | gh auth login --with-token
-
       - name: Close missing info issues
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh issue list --label "missing info" --state open --json number,labels,createdAt \
             | jq -r '.[] | select(((now - ( .createdAt | fromdateiso8601)) / 86400) > 7) | .number' \
