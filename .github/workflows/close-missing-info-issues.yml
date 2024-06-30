@@ -43,11 +43,12 @@ jobs:
             
             echo $label_added_at
             echo $five_minutes_ago
+            echo $one_minutes_ago
             
-            if [[ "$label_added_at" < "$one_minutes_ago" ]]; then
+            if [[ "$label_added_at" < "$five_minutes_ago" && "$label_added_at" > "$one_minutes_ago"]]; then
               echo "Commenting on issue #$issue_number: $issue_title"
               eval "$COMMENT_CMD $issue_number --body 'This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'"
-            elif [[ "$label_added_at" < "$five_minutes_ago" ]]; then
+            elif [[ "$label_added_at" > "$five_minutes_ago" ]]; then
               echo "Closing issue #$issue_number: $issue_title"
               eval "$CLOSE_ISSUE_CMD $issue_number --comment 'This issue is being closed because it was labeled \"missing info\" more than 5 minutes ago. Please provide the requested information and reopen the issue if necessary.'"
             fi
