@@ -16,8 +16,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue list --label "missing info" --state open --json number,labels,createdAt \
-            | jq -r '.[] | select(((now - ( .createdAt | fromdateiso8601)) / 86400) > 7) | .number' \
-            | while read -r issueNumber; do
-                gh issue close "$issueNumber" --comment "This issue is being closed because it has been labeled 'missing info' for more than a week. Please provide the requested information and reopen the issue if necessary.";
-              done
+          closure_comment = "This issue is being closed because it has been labeled 'missing info' for more than a week. Please provide the requested information and reopen the issue if necessary."
+          echo $closure_comment
+          missing_info_issues = gh issue list --label "missing info" --state open --json number,labels,createdAt | jq -r '.[]
+          echo $missing_info_issues
+          missing_info_issues_older_than_a_week = missing_info_issues | select(((now - ( .createdAt | fromdateiso8601)) / 86400) > 7) | .number'
+          echo $missing_info_issues_older_than_a_week
+          missing_info_issues_older_than_a_week | while read -r issueNumber; do gh issue close "$issueNumber" --comment closure_comment; done
