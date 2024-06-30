@@ -2,7 +2,7 @@ name: Close issues labeled 'missing info' more than 5 minutes ago
 
 on:
   schedule:
-    - cron: '*/2 * * * *'  # Runs every 2 minutes
+    - cron: '0 23 * * *'  # Runs every night 
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
           
           # Get list of issues with the 'missing_info' label
           issues=$(eval "$GET_ISSUES_CMD")
-
+          echo $issues
           # Process each issue to check the label addition time
           echo "$issues" | jq -c '.[]' | while read issue; do
             issue_number=$(echo "$issue" | jq -r '.number')
@@ -30,12 +30,15 @@ jobs:
 
             # Get the timeline events for each issue
             events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '[.[] | select(.event=="labeled" and .label.name=="missing_info") | {created_at: .created_at}]')
-
+            echo $issue_number
+            echo $issue_title
+            echo $events
             # Check if the label was added more than 5 minutes ago
             now=$(date -u +"%Y-%m-%dT%H:%M:00Z")
             five_minutes_ago=$(date -u -d "$now - 5 minutes" +"%Y-%m-%dT%H:%M:00Z")
             label_added_at=$(echo "$events" | jq -r '.[0].created_at')
-
+            echo $label_added_at
+            echo $five_minutes_ago
             if [[ "$label_added_at" < "$five_minutes_ago" ]]; then
               echo "Closing issue #$issue_number: $issue_title"
               eval "$CLOSE_ISSUE_CMD $issue_number --comment 'This issue is being closed because it was labeled \"missing_info\" more than 5 minutes ago. Please provide the requested information and reopen the issue if necessary.'"
