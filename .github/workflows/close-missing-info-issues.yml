@@ -41,9 +41,9 @@ jobs:
     
             if [[ $time_diff -gt $comment_issue_threshold && $time_diff -lt $close_issue_threshold ]]; then
               echo "Commenting on issue #$issue_number: $issue_title"
-              gh issue comment $issue_number --body $missing_info_comment 
+              gh issue comment $issue_number --body "$missing_info_comment"
             elif [[ $time_diff -ge $close_issue_threshold ]]; then
               echo "Closing issue #$issue_number: $issue_title"
-              gh issue close $issue_number --comment $missing_info_closure_comment
+              gh issue close $issue_number --comment "$missing_info_closure_comment"
             fi
           done
