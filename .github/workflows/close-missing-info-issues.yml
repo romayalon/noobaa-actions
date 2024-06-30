@@ -35,20 +35,24 @@ jobs:
             echo $events
             # Check if the label was added more than 5 minutes ago
             now=$(date -u +"%Y-%m-%dT%H:%M:00Z")
-            five_minutes_ago=$(date -u -d "$now - 5 minutes" +"%Y-%m-%dT%H:%M:00Z")
-            one_minutes_ago=$(date -u -d "$now - 1 minutes" +"%Y-%m-%dT%H:%M:00Z")
+            # five_minutes_ago=$(date -u -d "$now - 5 minutes" +"%Y-%m-%dT%H:%M:00Z")
+            # one_minutes_ago=$(date -u -d "$now - 1 minutes" +"%Y-%m-%dT%H:%M:00Z")
             # seven_days_ago=$(date -u -d "$now - 7 days" +"%Y-%m-%dT%H:%M:00Z")
             # three_days_ago=$(date -u -d "$now - 3 days" +"%Y-%m-%dT%H:%M:00Z")
             label_added_at=$(echo "$events" | jq -r '.[-1].created_at')
-            
+            label_added_timestamp=$(date -u -d "$label_added_at" +%s)  # Convert label added time to seconds since epoch
+
             echo $label_added_at
-            echo $five_minutes_ago
+            echo $label_added_timestamp
             echo $one_minutes_ago
-            
-            if [[ "$label_added_at" > "$one_minutes_ago" && "$label_added_at" < "$five_minutes_ago" ]]; then
+            comment_threshold=60
+            close_issue_threshold=180
+            time_diff=$((now - label_added_timestamp))
+    
+            if [[ $time_diff -gt $comment_threshold && $time_diff -lt $close_issue_threshold ]]; then
               echo "Commenting on issue #$issue_number: $issue_title"
               eval "$COMMENT_CMD $issue_number --body 'This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'"
-            elif [[ "$label_added_at" > "$five_minutes_ago" ]]; then
+            elif [[ $time_diff -ge $close_issue_threshold ]]; then
               echo "Closing issue #$issue_number: $issue_title"
               eval "$CLOSE_ISSUE_CMD $issue_number --comment 'This issue is being closed because it was labeled \"missing info\" more than 5 minutes ago. Please provide the requested information and reopen the issue if necessary.'"
             fi
