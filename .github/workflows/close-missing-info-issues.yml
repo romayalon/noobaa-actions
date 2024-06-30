@@ -34,7 +34,7 @@ jobs:
             echo $issue_title
             echo $events
             # Check if the label was added more than 5 minutes ago
-            now=$(date -u +"%Y-%m-%dT%H:%M:00Z")
+            now=$(date -u +%s)
             # five_minutes_ago=$(date -u -d "$now - 5 minutes" +"%Y-%m-%dT%H:%M:00Z")
             # one_minutes_ago=$(date -u -d "$now - 1 minutes" +"%Y-%m-%dT%H:%M:00Z")
             # seven_days_ago=$(date -u -d "$now - 7 days" +"%Y-%m-%dT%H:%M:00Z")
