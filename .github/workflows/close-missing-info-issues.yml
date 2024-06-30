@@ -17,7 +17,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          missing_info_issues=$((gh issue list --label 'missing info' --state open --json number,title)
+          missing_info_issues=$(gh issue list --label 'missing info' --state open --json number,title)
           echo missing_info_issues=$missing_info_issues >> $GITHUB_OUTPUT  
 
       - name: Close/Comment on missing info issues
