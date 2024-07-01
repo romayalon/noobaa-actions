@@ -2,7 +2,7 @@ name: Handle issues labeled 'missing info'
 
 on:
   schedule:
-    - cron: '32 7 * * *'    # Runs every night at 11PM
+    - cron: '* * * * 1-6'    # Runs every night at 11PM
   workflow_dispatch:        # Allows manual triggering of the workflow
 
 jobs:
@@ -39,10 +39,10 @@ jobs:
             label_added_timestamp=$(date -u -d "$label_added_at" +%s)         # Convert label added time to seconds since epoch
             time_diff=$((now - label_added_timestamp)) 
     
-            if [[ $time_diff -gt $comment_issue_threshold && $time_diff -lt $close_issue_threshold ]]; then
+            if [[ $time_diff -e $comment_issue_threshold ]]; then
               echo "Commenting on issue #$issue_number: $issue_title"
               gh issue comment $issue_number --body "$missing_info_comment"
-            elif [[ $time_diff -ge $close_issue_threshold ]]; then
+            elif [[ $time_diff -e $close_issue_threshold ]]; then
               echo "Closing issue #$issue_number: $issue_title"
               gh issue close $issue_number --comment "$missing_info_closure_comment"
             fi
