@@ -2,7 +2,7 @@ name: Handle issues labeled 'missing info'
 
 on:
   schedule:
-    - cron: '25 7 * * *'    # Runs every night at 11PM
+    - cron: '32 7 * * *'    # Runs every night at 11PM
   workflow_dispatch:        # Allows manual triggering of the workflow
 
 jobs:
