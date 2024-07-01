@@ -2,7 +2,7 @@ name: Handle issues labeled 'missing info'
 
 on:
   schedule:
-    - cron: '0 23 * * *'    # Runs every night at 11PM
+    - cron: '* * * * 1-6'    # Runs every night at 11PM
   workflow_dispatch:        # Allows manual triggering of the workflow
 
 jobs:
@@ -16,8 +16,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          comment_issue_threshold=$((3 * 24 * 60 * 60))
-          close_issue_threshold=$((7 * 24 * 60 * 60))
+          comment_issue_threshold=$((1 * 60))
+          close_issue_threshold=$((3 * 60))
 
           missing_info_comment='This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'
           missing_info_closure_comment='This issue is being closed because it was labeled \"missing info\" more than 7 days ago. Please provide the requested information and reopen the issue if necessary.'
