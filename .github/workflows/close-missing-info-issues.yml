@@ -41,7 +41,7 @@ jobs:
             echo "now=$now"
             echo "label_added_timestamp=$label_added_timestamp"
             echo "time_diff_in_seconds=$time_diff_in_seconds"
-            time_diff_in_days=$(($time_diff_in_seconds/(24 * 60 * 60)))
+            time_diff_in_days=$(($time_diff_in_seconds/(60)))
             echo "time_diff_in_days=$time_diff_in_days"
 
             if [ $time_diff_in_days -eq $comment_issue_threshold ]; then
