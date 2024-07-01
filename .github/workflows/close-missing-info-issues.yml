@@ -2,7 +2,7 @@ name: Handle issues labeled 'missing info'
 
 on:
   schedule:
-    - cron: '* * * * 1-6'    # Runs every night at 11PM
+    - cron: '0 23 * * *'    # Runs every night at 11PM
   workflow_dispatch:        # Allows manual triggering of the workflow
 
 jobs:
@@ -16,8 +16,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          comment_issue_threshold=$((1 * 60))
-          close_issue_threshold=$((3 * 60))
+          comment_issue_threshold=$((3 * 24 * 60 * 60))
+          close_issue_threshold=$((7 * 24 * 60 * 60))
 
           missing_info_comment='This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'
           missing_info_closure_comment='This issue is being closed because it was labeled \"missing info\" more than 7 days ago. Please provide the requested information and reopen the issue if necessary.'
@@ -37,8 +37,13 @@ jobs:
             now=$(date -u +%s)
             label_added_at=$(echo "$events" | jq -r '.[-1].created_at')
             label_added_timestamp=$(date -u -d "$label_added_at" +%s)         # Convert label added time to seconds since epoch
-            time_diff=$((now - label_added_timestamp)) 
-    
+            time_diff_in_seconds=$((now - label_added_timestamp)) 
+            echo "now=$now"
+            echo "label_added_timestamp=$label_added_timestamp"
+            echo "time_diff_in_seconds=$time_diff_in_seconds"
+            time_diff_in_days=($time_diff_in_seconds/(24 * 60 * 60))
+            echo "time_diff_in_days=$time_diff_in_days"
+
             if [[ $time_diff -e $comment_issue_threshold ]]; then
               echo "Commenting on issue #$issue_number: $issue_title"
               gh issue comment $issue_number --body "$missing_info_comment"
