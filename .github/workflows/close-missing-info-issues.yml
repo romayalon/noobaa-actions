@@ -16,8 +16,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          comment_issue_threshold=$((1 * 60))
-          close_issue_threshold=$((3 * 60))
+          comment_issue_threshold=$((1 * 1))
+          close_issue_threshold=$((3 * 1))
 
           missing_info_comment='This issue has been labeled \"missing info\" for more than 3 days. Please provide the requested information.'
           missing_info_closure_comment='This issue is being closed because it was labeled \"missing info\" more than 7 days ago. Please provide the requested information and reopen the issue if necessary.'
