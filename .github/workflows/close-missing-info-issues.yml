@@ -44,7 +44,7 @@ jobs:
             time_diff_in_days=$(($time_diff_in_seconds/(24 * 60 * 60)))
             echo "time_diff_in_days=$time_diff_in_days"
 
-            if [[ $time_diff -e $comment_issue_threshold ]]; then
+            if [ $time_diff -eq $comment_issue_threshold ]; then
               echo "Commenting on issue #$issue_number: $issue_title"
               gh issue comment $issue_number --body "$missing_info_comment"
             elif [[ $time_diff -e $close_issue_threshold ]]; then
