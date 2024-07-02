@@ -16,7 +16,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          missing_info_label="Missing Info"
+          missing_info_label="missing info"
           days_to_warn_missing_info=3
           days_to_close_missing_info=7
 
