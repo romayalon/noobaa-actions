@@ -1,4 +1,4 @@
-name: Handle issues labeled 'Missing Info'
+name: Missing Info issues
 
 on:
   schedule:
@@ -22,7 +22,7 @@ jobs:
           missing_info_warning='This issue has been labeled \"Missing Info\" for more than $days_to_warn_missing_info days. Please provide the requested information.'
           missing_info_closure_comment='This issue is being closed because it was labeled \"Missing Info\" more than $days_to_close_missing_info days ago. Please provide the requested information and reopen the issue if necessary.'
 
-          missing_info_issues=$(gh issue list --label "missing info" --state open --json number,title)
+          missing_info_issues=$(gh issue list --label 'missing info' --state open --json number,title)
           echo "missing_info_issues=$missing_info_issues"
 
           # process each issue to check the label addition time
@@ -34,10 +34,8 @@ jobs:
             # 2. find creation time of the last Missing Info label event
             events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '[.[] | select(.event=="labeled" and .label.name=="missing info") | {created_at: .created_at}]')
             echo "issue_number=$issue_number, issue_title=$issue_title, events=$events"
-            echo "events=$events"
-            echo "$events"
             label_added_at=$(echo "$events" | jq -r '.[-1].created_at')
-            
+
             # 3. find days diff between now and last Missing Info label added timestamp
             now=$(date -u +%s)
             label_added_timestamp=$(date -u -d "$label_added_at" +%s)
