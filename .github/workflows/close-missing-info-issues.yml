@@ -32,7 +32,7 @@ jobs:
 
             # 1. get the events for each issue, filter by Missing Info label
             # 2. find creation time of the last Missing Info label event
-            events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '.[] | select(.event=="labeled" and .label.name=="Missing Info") | {created_at}')
+            events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '.[] | select(.event=="labeled" and .label.name=="Missing Info") | {created_at: .created_at}')
             echo "issue_number=$issue_number, issue_title=$issue_title, events=$events"
             echo "events=$events"
             echo "$events"
@@ -47,10 +47,10 @@ jobs:
             echo "now=$now label_added_timestamp=$label_added_timestamp time_diff_in_seconds=$time_diff_in_seconds time_diff_in_days=$time_diff_in_days time_diff_in_mins=$time_diff_in_mins"
 
             # 4. warn or close the issue upon reaching warning/closure thresholds
-            if [ $time_diff_in_mins -eq $days_to_warn_missing_info ]; then
+            if [ $time_diff_in_days -eq $days_to_warn_missing_info ]; then
               echo "Commenting on issue #$issue_number: $issue_title"
               gh issue comment $issue_number --body "$missing_info_warning"
-            elif [ $time_diff_in_mins -ge $days_to_close_missing_info ]; then
+            elif [ $time_diff_in_days -ge $days_to_close_missing_info ]; then
               echo "Closing issue #$issue_number: $issue_title"
               gh issue close $issue_number --comment "$missing_info_closure_comment"
             fi
