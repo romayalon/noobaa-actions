@@ -41,7 +41,7 @@ jobs:
             now=$(date -u +%s)
             label_added_timestamp=$(date -u -d "$label_added_at" +%s)
             time_diff_in_seconds=$((now - label_added_timestamp)) 
-            time_diff_in_days=$(($time_diff_in_seconds/(24 * 60 * 60)))
+            time_diff_in_days=$(($time_diff_in_seconds/(60)))
             echo "now=$now label_added_timestamp=$label_added_timestamp time_diff_in_seconds=$time_diff_in_seconds time_diff_in_days=$time_diff_in_days"
 
             # 4. warn or close the issue upon reaching warning/closure thresholds
