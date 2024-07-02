@@ -33,7 +33,7 @@ jobs:
             # 1. get the events for each issue, filter by Missing Info label
             # 2. find creation time of the last Missing Info label event
             latest_missing_info_event=$(gh api repos/${{ github.repository }}/issues/$issue_number/events | jq '[.[] | select(.event == "labeled")] | sort_by(.created_at) | reverse | .[0] | {created_at: .created_at}')
-            echo "issue_number=$issue_number, issue_title=$issue_title, events=$events"
+            echo "issue_number=$issue_number, issue_title=$issue_title, latest_missing_info_event=$latest_missing_info_event"
             label_added_at=$(echo "$latest_missing_info_event" | jq '.created_at')
             echo "label_added_at=$label_added_at"
             label_added_timestamp=$(date -u -d "$label_added_at" +%s)
