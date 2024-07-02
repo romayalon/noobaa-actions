@@ -34,6 +34,8 @@ jobs:
             # 2. find creation time of the last Missing Info label event
             events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '.[] | select(.event=="labeled" and .label.name=="Missing Info") | {created_at}')
             echo "issue_number=$issue_number, issue_title=$issue_title, events=$events"
+            echo "events=$events"
+            echo $events
             label_added_at=$(echo "$events" | jq -r '.[-1].created_at')
             
             # 3. find days diff between now and last Missing Info label added timestamp
