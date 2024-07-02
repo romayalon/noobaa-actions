@@ -48,7 +48,7 @@ jobs:
             if [ $time_diff_in_days -eq $days_to_warn_missing_info ]; then
               echo "Commenting on issue #$issue_number: $issue_title"
               gh issue comment $issue_number --body "$missing_info_warning"
-            elif [ $time_diff_in_days -eq $days_to_close_missing_info ]; then
+            elif [ $time_diff_in_days -ge $days_to_close_missing_info ]; then
               echo "Closing issue #$issue_number: $issue_title"
               gh issue close $issue_number --comment "$missing_info_closure_comment"
             fi
