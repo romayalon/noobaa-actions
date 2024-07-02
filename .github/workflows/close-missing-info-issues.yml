@@ -35,14 +35,22 @@ jobs:
             events=$(gh api repos/${{ github.repository }}/issues/$issue_number/timeline --paginate --jq '[.[] | select(.event=="labeled" and .label.name=="missing info") | {created_at: .created_at}]')
             echo "issue_number=$issue_number, issue_title=$issue_title, events=$events"
             label_added_at=$(echo $events | jq -r '.[-1].created_at')
+            echo "label_added_at=$label_added_at"
 
             # 3. find days diff between now and last Missing Info label added timestamp
             now=$(date -u +%s)
+            echo "now=$now"
             label_added_timestamp=$(date -u -d "$label_added_at" +%s)
+            echo "label_added_timestamp=$label_added_timestamp"
             time_diff_in_seconds=$((now - label_added_timestamp)) 
+            echo "time_diff_in_seconds=$time_diff_in_seconds"
             time_diff_in_days=$(($time_diff_in_seconds/(24 * 60 * 60)))
+            echo "time_diff_in_days=$time_diff_in_days"
             time_diff_in_mins=$(($time_diff_in_seconds/(60)))
+            echo "time_diff_in_mins=$time_diff_in_mins"
             echo "now=$now label_added_timestamp=$label_added_timestamp time_diff_in_seconds=$time_diff_in_seconds time_diff_in_days=$time_diff_in_days time_diff_in_mins=$time_diff_in_mins"
+            echo "days_to_warn_missing_info=$days_to_warn_missing_info"
+            echo "days_to_close_missing_info=$days_to_close_missing_info"
 
             # 4. warn or close the issue upon reaching warning/closure thresholds
             if [ $time_diff_in_mins -eq $days_to_warn_missing_info ]; then
