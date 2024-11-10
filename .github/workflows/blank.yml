@@ -19,8 +19,8 @@ jobs:
         run: |
           make rpm BUILD_S3SELECT=0
           echo "1"
-          ls /export/
-          noobaa_pkg=$(ls /export/ | grep noobaa)
+          ls ./build/rpm/
+          noobaa_pkg=$(ls ./build/rpm/ | grep noobaa)
           echo "2 ${noobaa_pkg}"
           sudo apt-get update && sudo apt-get install -y wget
           echo "3"
@@ -32,5 +32,5 @@ jobs:
           echo "6"
           rpm -i boost-thread-1.75.0-8.el9.x86_64.rpm
           echo "7"
-          rpm -i "/export/$noobaa_pkg"
+          rpm -i "./build/rpm/$noobaa_pkg"
           echo "Done installing NooBaa RPM"
