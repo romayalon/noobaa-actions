@@ -1,0 +1,27 @@
+name: RPM Install Tests
+on: [workflow_dispatch]
+
+jobs:
+  run-unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: romayalon/noobaa-core
+          ref: ${{ inputs.branch }}
+
+      - name: Run RPM Install Tests
+        run: |
+          make rpm BUILD_S3SELECT=0
+          noobaa_pkg=$(rpm -qa | grep '^noobaa')
+          yum install wget
+          wget https://rpmfind.net/linux/centos-stream/9-stream/AppStream/x86_64/os/Packages/boost-system-1.75.0-8.el9.x86_64.rpm
+          wget https://rpmfind.net/linux/centos-stream/9-stream/AppStream/x86_64/os/Packages/boost-thread-1.75.0-8.el9.x86_64.rpm
+          rpm -i boost-system-1.75.0-8.el9.x86_64.rpm
+          rpm -i boost-thread-1.75.0-8.el9.x86_64.rpm
+          rpm i $"noobaa_pkg"
