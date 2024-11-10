@@ -17,12 +17,13 @@ jobs:
       
       - name: Run RPM Install Tests
         run: |
-          make rpm BUILD_S3SELECT=0
+          #make rpm BUILD_S3SELECT=0
           echo "1"
-          ls ./build/rpm/
-          noobaa_pkg=$(ls ./build/rpm/ | grep noobaa | grep .x86_64.rpm)
-          echo "2 ${noobaa_pkg}"
-          sudo dnf install -y boost boost-devel boost-system boost-thread
+          #ls ./build/rpm/
+          #noobaa_pkg=$(ls ./build/rpm/ | grep noobaa | grep .x86_64.rpm)
+          #echo "2 ${noobaa_pkg}"
+          apt-get update
+          apt-get install -y libboost-system-dev libboost-thread-dev
           # sudo apt-get update && sudo apt-get install -y wget
           # echo "3"
           # wget https://rpmfind.net/linux/centos-stream/9-stream/AppStream/x86_64/os/Packages/boost-system-1.75.0-8.el9.x86_64.rpm
