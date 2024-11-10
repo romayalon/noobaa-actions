@@ -2,7 +2,7 @@ name: RPM Install Tests
 on: [workflow_dispatch]
 
 jobs:
-  run-unit-tests:
+  run-rpm-install-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     concurrency:
@@ -14,18 +14,13 @@ jobs:
         with:
           repository: romayalon/noobaa-core
           ref: ${{ inputs.branch }}
-          
-      - name: Install RPM (for demonstration, if needed)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rpm
-          rpm -qa
       
       - name: Run RPM Install Tests
         run: |
           make rpm BUILD_S3SELECT=0
           echo "1"
-          noobaa_pkg=$(rpm -qa | grep '^noobaa')
+          ls /export/
+          noobaa_pkg=$(ls /export/ | grep noobaa)
           echo "2 ${noobaa_pkg}"
           sudo apt-get update && sudo apt-get install -y wget
           echo "3"
