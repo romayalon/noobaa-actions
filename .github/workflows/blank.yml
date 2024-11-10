@@ -14,7 +14,13 @@ jobs:
         with:
           repository: romayalon/noobaa-core
           ref: ${{ inputs.branch }}
-
+          
+      - name: Install RPM (for demonstration, if needed)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+          rpm -qa
+      
       - name: Run RPM Install Tests
         run: |
           make rpm BUILD_S3SELECT=0
