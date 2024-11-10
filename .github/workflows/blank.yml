@@ -18,10 +18,18 @@ jobs:
       - name: Run RPM Install Tests
         run: |
           make rpm BUILD_S3SELECT=0
+          echo "1"
           noobaa_pkg=$(rpm -qa | grep '^noobaa')
+          echo "2 ${noobaa_pkg}"
           sudo apt-get update && sudo apt-get install -y wget
+          echo "3"
           wget https://rpmfind.net/linux/centos-stream/9-stream/AppStream/x86_64/os/Packages/boost-system-1.75.0-8.el9.x86_64.rpm
+          echo "4"
           wget https://rpmfind.net/linux/centos-stream/9-stream/AppStream/x86_64/os/Packages/boost-thread-1.75.0-8.el9.x86_64.rpm
+          echo "5"
           rpm -i boost-system-1.75.0-8.el9.x86_64.rpm
+          echo "6"
           rpm -i boost-thread-1.75.0-8.el9.x86_64.rpm
-          rpm -i $"noobaa_pkg"
+          echo "7"
+          rpm -i "/export/$noobaa_pkg"
+          echo "Done installing NooBaa RPM"
