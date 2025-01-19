@@ -34,6 +34,7 @@ jobs:
         - name: Run Non Containerized RPM Test
           run: |
             make rpm BUILD_S3SELECT=0
+            echo ${{ secrets.GHACTIONSDOCKERHUB }} | docker login -u ${{ secrets.GHACTIONSDOCKERHUBNAME }} --password-stdin
             container_id=$(docker run --privileged --user root -d --platform=linux/amd64 oowy/redhat:ubi9)
             DATE=$(date +'%Y%m%d')
             VERSION=$(jq -r '.version' < ./package.json)
