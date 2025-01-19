@@ -24,6 +24,7 @@ on:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          repository: romayalon/noobaa-core
           ref: ${{ inputs.upgrade_from_branch }}
 
       - name: Run Non Containerized RPM Test
