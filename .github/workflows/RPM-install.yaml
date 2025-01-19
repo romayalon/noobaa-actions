@@ -20,26 +20,30 @@ on:
           - 'linux/amd64'
           - 'linux/ppc64le'
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          repository: romayalon/noobaa-core
-          ref: ${{ inputs.upgrade_from_branch }}
-
-      - name: Run Non Containerized RPM Test
-        run: |
-          make rpm BUILD_S3SELECT=0
-          container_id=$(docker run --privileged --user root -d --platform=linux/amd64 oowy/redhat:ubi9)
-          DATE=$(date +'%Y%m%d')
-          VERSION=$(jq -r '.version' < ./package.json)
-          ARCH=${{ inputs.architecture }}
-          CENTOS_VER=${{ inputs.centos_ver }}
-          RPM_SUFFIX=el${CENTOS_VER}.${ARCH}.rpm
-          RPM_BASE_VERSION=noobaa-core-${VERSION}-${DATE}
-          RPM_FULL_PATH=${RPM_BASE_VERSION}-${{ inputs.upgrade_from_branch }}.${RPM_SUFFIX}
-          echo "rpm_full_path=${RPM_FULL_PATH}"
-          docker cp ./build/rpm/${RPM_BASE_VERSION}.${RPM_SUFFIX} $container_id:${RPM_FULL_PATH}
-          install_command="rpm -i ${RPM_FULL_PATH}"
-          echo "install_command=${install_command}"
-          docker exec my_container bash -c "${install_command}"
+jobs:
+  build-rpm-and-install:
+      runs-on: ubuntu-latest
+      timeout-minutes: 90
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            repository: romayalon/noobaa-core
+            ref: ${{ inputs.upgrade_from_branch }}
+  
+        - name: Run Non Containerized RPM Test
+          run: |
+            make rpm BUILD_S3SELECT=0
+            container_id=$(docker run --privileged --user root -d --platform=linux/amd64 oowy/redhat:ubi9)
+            DATE=$(date +'%Y%m%d')
+            VERSION=$(jq -r '.version' < ./package.json)
+            ARCH=${{ inputs.architecture }}
+            CENTOS_VER=${{ inputs.centos_ver }}
+            RPM_SUFFIX=el${CENTOS_VER}.${ARCH}.rpm
+            RPM_BASE_VERSION=noobaa-core-${VERSION}-${DATE}
+            RPM_FULL_PATH=${RPM_BASE_VERSION}-${{ inputs.upgrade_from_branch }}.${RPM_SUFFIX}
+            echo "rpm_full_path=${RPM_FULL_PATH}"
+            docker cp ./build/rpm/${RPM_BASE_VERSION}.${RPM_SUFFIX} $container_id:${RPM_FULL_PATH}
+            install_command="rpm -i ${RPM_FULL_PATH}"
+            echo "install_command=${install_command}"
+            docker exec my_container bash -c "${install_command}"
