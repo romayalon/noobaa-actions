@@ -33,7 +33,6 @@ jobs:
   
         - name: Run Non Containerized RPM Test
           run: |
-            make rpm BUILD_S3SELECT=0
             echo ${{ secrets.GHACTIONSDOCKERHUB }} | docker login -u ${{ secrets.GHACTIONSDOCKERHUBNAME }} --password-stdin
             container_id=$(docker run --privileged --user root -d --platform=linux/amd64 oowy/redhat:ubi9)
             DATE=$(date +'%Y%m%d')
@@ -44,6 +43,7 @@ jobs:
             RPM_BASE_VERSION=noobaa-core-${VERSION}-${DATE}
             RPM_FULL_PATH=${RPM_BASE_VERSION}-${{ inputs.upgrade_from_branch }}.${RPM_SUFFIX}
             echo "rpm_full_path=${RPM_FULL_PATH}"
+            make rpm BUILD_S3SELECT=0
             docker cp ./build/rpm/${RPM_BASE_VERSION}.${RPM_SUFFIX} $container_id:${RPM_FULL_PATH}
             install_command="rpm -i ${RPM_FULL_PATH}"
             echo "install_command=${install_command}"
