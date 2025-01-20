@@ -19,6 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          repository: romayalon/noobaa-core
           ref: ${{ inputs.branch }}
      
       - name: Run Non Containerized RPM Build And Install Test
