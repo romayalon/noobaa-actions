@@ -24,4 +24,4 @@ jobs:
      
       - name: Run Non Containerized RPM Build And Install Test
         run: |
-            make rpm_build_and_install BUILD_S3SELECT=0 CENTOS_VER=${{ inputs.centos_ver }} CONTAINER_PLATFORM=${{ inputs.architecture }}
+            make rpm_build_and_install BUILD_S3SELECT=0 CENTOS_VER=${{ inputs.centos_ver }} CONTAINER_PLATFORM=linux/amd64
