@@ -1,8 +1,17 @@
 name: Nightly RPM Build and Install Test
 on: 
-  schedule:
-    - cron: '35 12 * * *'
-      
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to RPM Build and Install From'
+        required: true
+      centos_ver:
+        type: choice
+        description: 'Centos Base image (options: 8/9) - Optional, default is 9'
+        default: '9'
+        options: 
+          - '8'
+          - '9'
 jobs:
   call-master-rpm-build-and-install-9:
     uses: ./.github/workflows/rpm-build-and-install-test-base.yaml
