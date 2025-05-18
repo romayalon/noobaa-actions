@@ -1,0 +1,22 @@
+name: Warp Tests
+on: [workflow_dispatch]
+
+jobs:
+  warp-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout noobaa-core
+        uses: actions/checkout@v4
+        with:
+          repository: romayalon/noobaa-core
+          ref: romy-ci-warp-action
+
+      - name: Run Warp tests
+        run: |
+          set -x
+          cd ./noobaa-core
+          make test-warp
