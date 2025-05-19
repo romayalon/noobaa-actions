@@ -14,6 +14,7 @@ jobs:
         with:
           repository: romayalon/noobaa-core
           ref: romy-ci-warp-action
+          path: 'noobaa-core'
 
       - name: Create Warp logs directory
         run: |
