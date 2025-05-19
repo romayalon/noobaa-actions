@@ -15,13 +15,21 @@ jobs:
           repository: romayalon/noobaa-core
           ref: romy-ci-warp-action
 
+      - name: Create Warp logs directory
+        run: |
+          set -x
+          cd ./noobaa-core
+          mkdir -p logs/warp-test-logs
+          chmod 777 logs/warp-test-logs
+
       - name: Run Warp tests
         run: |
+          set -x
+          cd ./noobaa-core
           make test-warp
-
-
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: warp_logs
-          path: /logs/warp-test-logs/**/*.log
+          path: ./noobaa-core/logs/warp-test-logs/**/*.log
