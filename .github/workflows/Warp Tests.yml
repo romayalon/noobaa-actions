@@ -18,3 +18,10 @@ jobs:
       - name: Run Warp tests
         run: |
           make test-warp
+
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: warp_logs
+          path: /logs/warp-test-logs/**/*.log
