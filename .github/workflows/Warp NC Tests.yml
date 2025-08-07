@@ -1,5 +1,5 @@
 name: Warp NC Tests
-on: [push, pull_request, workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:
   warp-nc-tests:
