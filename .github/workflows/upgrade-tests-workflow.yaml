@@ -39,7 +39,7 @@ jobs:
           set -x
           bash .travis/install-5nodes-kind-cluster.sh
           go get -v github.com/onsi/ginkgo/v2
-          go install -v github.com/onsi/ginkgo/v2/ginkgo@latest
+          go install -v github.com/onsi/ginkgo/v2/ginkgo
           ginkgo version
           
       - name: Run Upgrade test
