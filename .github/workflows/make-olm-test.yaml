@@ -48,4 +48,4 @@ jobs:
       - name: Make OLM
         run: |
           set -x
-          make olm
+          make gen-olm
