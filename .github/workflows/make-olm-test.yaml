@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: romayalon/noobaa-operator
-          ref: master
+          ref: romy-setuptool-81
 
       - name: Set up Go
         uses: actions/setup-go@v5
