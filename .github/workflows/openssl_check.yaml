@@ -1,0 +1,22 @@
+name: openssl check
+on: 
+  workflow_dispatch:
+
+jobs:
+  manual-nc-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: romayalon/noobaa-core     
+
+      - name: check ssl version
+        run: |
+          sudo apt-get update --fix-missing
+          sudo apt-get -y install nasm libcap-dev
+          openssl version
+          npm install
+          npm run build
+          openssl version
