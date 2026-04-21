@@ -12,10 +12,14 @@ jobs:
         with:
           repository: romayalon/noobaa-core     
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+        
       - name: check ssl version
         run: |
           sudo apt-get update --fix-missing
           sudo apt-get -y install nasm libcap-dev
-          openssl version
-          sudo apt-get install --only-upgrade openssl libssl-dev -y
-          openssl version
+          node -e "console.log('Node', process.version, 'OpenSSL', process.versions.openssl)"
+
