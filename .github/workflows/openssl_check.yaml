@@ -17,6 +17,5 @@ jobs:
           sudo apt-get update --fix-missing
           sudo apt-get -y install nasm libcap-dev
           openssl version
-          npm install
-          npm run build
+          sudo apt-get install --only-upgrade openssl libssl-dev -y
           openssl version
